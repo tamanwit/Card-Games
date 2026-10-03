@@ -1,6 +1,16 @@
 // imports
 const argon2 = require("argon2");
 const userModel = require("../models/userModel");
+const jwt = require('jsonwebtoken')
+require('dotenv').config()
+const cookieParser = require('cookie-parser')
+
+const cookieOptions = {
+  httpOnly: true,
+  secure: process.env.NODE_ENV === "production",
+  sameSite: "strict",
+  maxAge: 2 * 60 * 60 * 1000,
+};
 
 const registerUser = async (req, res) => {
     try {
@@ -58,8 +68,13 @@ const loginUser = async (req, res) => {
         if (await argon2.verify(user.password, password)) {
             // jwt setup
             // attach token to cookie
+            const payload = {
+                id : user._id
+            }
 
-            res.status(200).json({
+            const token = jwt.sign(payload, process.env.JWT_SECRET_KEY, {expiresIn : '1d'})
+
+            res.status(200).cookie("token", token, cookieOptions).json({
                 message: "login success",
             })
         } else {
