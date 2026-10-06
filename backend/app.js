@@ -5,7 +5,7 @@ const authRoutes = require('./routes/authRoute')
 const {connectDB} = require('./database/dbConnect')
 const app = express()
 
-connectDB()
+// connectDB()
 
 app.use(express.json())
 app.use(cookieParser())
