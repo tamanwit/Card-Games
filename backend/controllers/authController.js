@@ -9,7 +9,7 @@ const cookieOptions = {
   httpOnly: true,
   secure: process.env.NODE_ENV === "production",
   sameSite: "strict",
-  maxAge: 2 * 60 * 60 * 1000,
+  maxAge: 2 * 60 * 60 * 1000, // 2 hours in milliseconds
 };
 
 const registerUser = async (req, res) => {
@@ -42,8 +42,9 @@ const registerUser = async (req, res) => {
             }
         });
     } catch (error) {
+        console.error(error);
         return res.status(500).json({
-            error: error,
+            error: error.message,
             message: "internal server error",
         });
     }
@@ -83,8 +84,9 @@ const loginUser = async (req, res) => {
             });
         }
     } catch (error) {
+        console.error(error);
         return res.status(500).json({
-            error: error,
+            error: error.message,
             message: "internal server error",
         });
     }
@@ -93,5 +95,4 @@ const loginUser = async (req, res) => {
 module.exports = {
     registerUser,
     loginUser,
-
 };
