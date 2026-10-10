@@ -92,7 +92,35 @@ const loginUser = async (req, res) => {
     }
 };
 
+const getProfile = async (req, res)=>{
+    try{
+        const id = req.user.id
+        const user = userModel.findById(id)
+        if(!user){
+            return res.status(404).json({
+                message : "User not found"
+            })
+        }
+        
+        return res.status(200).json({
+            message : "success",
+            userDetails : {
+                name : user.name,
+                email : user.email,
+                username : user.username
+            }
+        })
+
+    } catch(error){
+        return res.status(500).json({
+            message : "Internal Server Error"
+        })
+    }
+}
+
 module.exports = {
     registerUser,
     loginUser,
+    getProfile,
+    
 };

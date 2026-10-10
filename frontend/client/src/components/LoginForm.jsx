@@ -19,7 +19,7 @@ const LoginForm = () => {
       password: loginDetails.password,
     });
     if (result) {
-      navigate("/");
+      navigate("/home");
     }
   };
 
