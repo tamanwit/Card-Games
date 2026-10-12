@@ -15,10 +15,11 @@ const AuthContextProvider = ({ children }) => {
       setError("");
       setLoading(true);
 
-      const res = await axios.post("http://localhost:8000/login", userData);
+      await axios.post("http://localhost:8000/login", userData, {withCredentials:true});
 
-      setResponse(res.data);
-      return res.data;
+      const res = await axios.get("http://localhost:8000/profile", {withCredentials:true})
+      setUser(res.data.userDetails)
+      return res.data.userDetails;
     } catch (err) {
       setError(err.response?.data?.message || err.message || "Login failed");
       return null;
@@ -46,12 +47,32 @@ const AuthContextProvider = ({ children }) => {
     }
   };
 
+  // log-out user
+
+  const logOut = async ()=>{
+    try{
+      setError("")
+      setLoading(true)
+
+      await axios.post("http://localhost:8000/logout")
+      setUser(null)
+
+    } catch(err){
+      setError(
+        err.response?.data?.message || err.message || "Registration failed",
+      );
+      return null;
+    } finally{
+      setLoading(false)
+    }
+  }
+
   useEffect(() => {
     const getUser = async () => {
       try {
         setError("");
         setLoading(true);
-        const response = await axios.get("http://localhost:8000/profile");
+        const response = await axios.get("http://localhost:8000/profile", {withCredentials:true});
         setUser(response.data.userDetails);
         return response.data.userDetails;
       } catch (err) {
@@ -70,6 +91,7 @@ const AuthContextProvider = ({ children }) => {
       value={{
         loginUser,
         registerUser,
+        logOut,
         response,
         user,
         error,
